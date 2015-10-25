@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+    <title>2D Sierpinski Gasket</title>
+
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 attributeVertexColor;
+
+varying vec4 varyingVertexColor;
+
+uniform vec4 uniformVertexColor;
+uniform mat4 projection;
+uniform int twist;
+uniform float twistAngle;
+
+void
+main()
+{
+    vec4 pos = vPosition;
+
+    if(twist > 0)
+    {
+        float x = pos.x;
+        float y = pos.y;
+        float d = sqrt(x*x + y*y);
+        pos.x = x*cos(d+twistAngle) - y*sin(d+twistAngle);
+        pos.y = x*sin(d+twistAngle) + y*cos(d+twistAngle);
+    }
+    /*if(uniformVertexColor.r == 0.0) varyingVertexColor = attributeVertexColor;
+    else*/
+    varyingVertexColor = uniformVertexColor;
+    gl_Position = projection*pos;
+}
+</script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec4 varyingVertexColor;
+
+void
+main()
+{
+    gl_FragColor = varyingVertexColor;
+}
+</script>
+
+    <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../Common/initShaders.js"></script>
+    <script type="text/javascript" src="../Common/MV.js"></script>
+    <script type="text/javascript" src="gasket.js"></script>
+</head>
+
+<p>
+<canvas id="gl-canvas" width="720" height="720">
+    Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<br>
+<p>
+    N&uacute;mero de sub-divis&otilde;es [0,7]:
+    <input  id="subDivisionsRange" onchange="updateTextFieldValue();render()" type="range" min="0" max="7" step="1" value="0"/>
+    <input type="text" id="subDivisionsValue" value="">
+    <br>
+    &Acirc;ngulo de rota&ccedil;&atilde;o: <input type="text" id="rotationAngle" onchange="render()" value="60"><br>
+    Tri&acirc;ngulos preenchidos: <input id="fillMidTriangles" name="fillMidTriangles" type="checkbox"  onclick="render()"> <br>
+    Torcer tri&acirc;ngulos: <input id="twistTriangles" name="twistTriangles" type="checkbox"  onclick="render()">
+</p>
+</body>
+</html>
