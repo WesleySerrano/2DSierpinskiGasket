@@ -17,7 +17,6 @@ var rotate;
 var uniformRotationAngleLocation;
 var uniformVertexColorLocation;
 var program;
-//var generatedColors;
 
 window.onload = function init()
 {
@@ -41,7 +40,6 @@ function render()
     rotate = document.getElementById("rotate").checked;
     var twist = 0;
     if(document.getElementById("twistTriangles").checked) twist = 1;
-
 
     canvas = document.getElementById( "gl-canvas" );
 
@@ -80,7 +78,6 @@ function render()
     var projectionMatrix = ortho(-2,2,-2,2,-1,1);
     gl.uniformMatrix4fv( uniformProjectionMatrixLocation, false, flatten(projectionMatrix));
 
-
     uniformRotationAngleLocation = gl.getUniformLocation(program,"rotationAngle");
 
     var twistLocation = gl.getUniformLocation(program,"twist");
@@ -97,14 +94,10 @@ function triangleEdges( a, b, c )
 function triangle( a, b, c )
 {
     trianglesPointsArray.push( a, b, c);
-    /*generatedColors.push(1.0,  0.0,  0.0,  1.0);
-    generatedColors.push(0.0,  1.0,  0.0,  1.0);
-    generatedColors.push(0.0,  0.0,  1.0,  1.0);*/
 }
 
 function divideTriangle( a, b, c, count )
 {
-console.log(count);
     // check for end of recursion
 
     if ( count === 0 )
@@ -134,10 +127,11 @@ console.log(count);
 
 function draw()
 {
+    gl.clear( gl.COLOR_BUFFER_BIT );
+
     gl.uniform1f( uniformRotationAngleLocation, rotationAngle);
     if(rotate) rotationAngle += 0.005;
 
-    gl.clear( gl.COLOR_BUFFER_BIT );
     /******** Triangulos preenchidos ******/
     // Load the data into the GPU
     var trianglePointsBufferId = gl.createBuffer();
@@ -145,19 +139,10 @@ function draw()
     gl.bufferData( gl.ARRAY_BUFFER, flatten(trianglesPointsArray), gl.STATIC_DRAW );
     gl.uniform4fv(uniformVertexColorLocation, flatten([0.0,0.0,1.0,1.0]));
 
-
     // Associate out shader variables with our data buffer
     var vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
-
-    /*var verticesColorBuffer = gl.createBuffer();
-     gl.bindBuffer(gl.ARRAY_BUFFER, verticesColorBuffer);
-     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(generatedColors), gl.STATIC_DRAW);
-
-     var vColor = gl.getAttribLocation( program, "attributeVertexColor" );
-     gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-     gl.enableVertexAttribArray( vColor );*/
 
     renderTriangle();
     /********************************************/

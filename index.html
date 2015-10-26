@@ -7,7 +7,6 @@
 
     <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
-attribute vec4 attributeVertexColor;
 
 varying vec4 varyingVertexColor;
 
@@ -30,8 +29,6 @@ main()
     pos.x = x*cos(d+rotationAngle) - y*sin(d+rotationAngle);
     pos.y = x*sin(d+rotationAngle) + y*cos(d+rotationAngle);
 
-    /*if(uniformVertexColor.r == 0.0) varyingVertexColor = attributeVertexColor;
-    else*/
     varyingVertexColor = uniformVertexColor;
     gl_Position = projection*pos;
 }
