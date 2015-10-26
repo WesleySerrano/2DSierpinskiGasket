@@ -14,21 +14,22 @@ varying vec4 varyingVertexColor;
 uniform vec4 uniformVertexColor;
 uniform mat4 projection;
 uniform int twist;
-uniform float twistAngle;
+uniform float rotationAngle;
 
 void
 main()
 {
     vec4 pos = vPosition;
+    float d = 0.0;
 
-    if(twist > 0)
-    {
-        float x = pos.x;
-        float y = pos.y;
-        float d = sqrt(x*x + y*y);
-        pos.x = x*cos(d+twistAngle) - y*sin(d+twistAngle);
-        pos.y = x*sin(d+twistAngle) + y*cos(d+twistAngle);
-    }
+    float x = pos.x;
+    float y = pos.y;
+
+    if(twist > 0) d = sqrt(x*x + y*y);
+
+    pos.x = x*cos(d+rotationAngle) - y*sin(d+rotationAngle);
+    pos.y = x*sin(d+rotationAngle) + y*cos(d+rotationAngle);
+
     /*if(uniformVertexColor.r == 0.0) varyingVertexColor = attributeVertexColor;
     else*/
     varyingVertexColor = uniformVertexColor;
@@ -64,7 +65,7 @@ main()
     <input  id="subDivisionsRange" onchange="updateTextFieldValue();render()" type="range" min="0" max="7" step="1" value="0"/>
     <input type="text" id="subDivisionsValue" value="">
     <br>
-    &Acirc;ngulo de rota&ccedil;&atilde;o: <input type="text" id="rotationAngle" onchange="render()" value="60"><br>
+    Rotacionar: <input type="checkbox" id="rotate" onchange="render()"><br>
     Tri&acirc;ngulos preenchidos: <input id="fillMidTriangles" name="fillMidTriangles" type="checkbox"  onclick="render()"> <br>
     Torcer tri&acirc;ngulos: <input id="twistTriangles" name="twistTriangles" type="checkbox"  onclick="render()">
 </p>
