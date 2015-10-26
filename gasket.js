@@ -20,13 +20,25 @@ var program;
 
 window.onload = function init()
 {
-    updateTextFieldValue();
+    updateTextFieldsValues();
     render();
 };
 
-function updateTextFieldValue()
+function updateTextFieldsValues()
 {
     document.getElementById("subDivisionsValue").value = document.getElementById("subDivisionsRange").value;
+
+    document.getElementById("triangleRValue").innerHTML = document.getElementById("triangleR").value;
+    document.getElementById("triangleGValue").innerHTML = document.getElementById("triangleG").value;
+    document.getElementById("triangleBValue").innerHTML = document.getElementById("triangleB").value;
+
+    document.getElementById("lineRValue").innerHTML = document.getElementById("lineR").value;
+    document.getElementById("lineGValue").innerHTML = document.getElementById("lineG").value;
+    document.getElementById("lineBValue").innerHTML = document.getElementById("lineB").value;
+
+    document.getElementById("bgRValue").innerHTML = document.getElementById("bgR").value;
+    document.getElementById("bgGValue").innerHTML = document.getElementById("bgG").value;
+    document.getElementById("bgBValue").innerHTML = document.getElementById("bgB").value;
 }
 
 
@@ -64,8 +76,12 @@ function render()
     //
     //  Configure WebGL
     //
+    var bgR = document.getElementById("bgR").value/255.0;
+    var bgG = document.getElementById("bgG").value/255.0;
+    var bgB = document.getElementById("bgB").value/255.0;
+
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+    gl.clearColor( bgR, bgG, bgB, 1.0 );
 
     //  Load shaders and initialize attribute buffers
 
@@ -84,7 +100,7 @@ function render()
     gl.uniform1i( twistLocation, twist);
 
     draw();
-};
+}
 
 function triangleEdges( a, b, c )
 {
@@ -127,17 +143,25 @@ function divideTriangle( a, b, c, count )
 
 function draw()
 {
+    var triangleR = Number(document.getElementById("triangleR").value)/255.0;
+    var triangleG = Number(document.getElementById("triangleG").value)/255.0;
+    var triangleB = Number(document.getElementById("triangleB").value)/255.0;
+
+    var lineR = Number(document.getElementById("lineR").value)/255.0;
+    var lineG = Number(document.getElementById("lineG").value)/255.0;
+    var lineB = Number(document.getElementById("lineB").value)/255.0;
+
     gl.clear( gl.COLOR_BUFFER_BIT );
 
     gl.uniform1f( uniformRotationAngleLocation, rotationAngle);
-    if(rotate) rotationAngle += 0.005;
+    if(rotate) rotationAngle += 0.001;
 
     /******** Triangulos preenchidos ******/
     // Load the data into the GPU
     var trianglePointsBufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, trianglePointsBufferId );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(trianglesPointsArray), gl.STATIC_DRAW );
-    gl.uniform4fv(uniformVertexColorLocation, flatten([0.0,0.0,1.0,1.0]));
+    gl.uniform4fv(uniformVertexColorLocation, flatten([triangleR,triangleG,triangleB,1.0]));
 
     // Associate out shader variables with our data buffer
     var vPosition = gl.getAttribLocation( program, "vPosition" );
@@ -156,10 +180,10 @@ function draw()
 
     // Associate out shader variables with our data buffer
 
-    var vPosition = gl.getAttribLocation( program, "vPosition" );
+    //vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
-    gl.uniform4fv(uniformVertexColorLocation, flatten([1.0,1.0,1.0,1.0]));
+    gl.uniform4fv(uniformVertexColorLocation, flatten([lineR,lineG,lineB,1.0]));
 
     renderLines();
     /********************************************/

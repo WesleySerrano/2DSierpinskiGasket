@@ -59,12 +59,28 @@ main()
 <br>
 <p>
     N&uacute;mero de sub-divis&otilde;es [0,7]:
-    <input  id="subDivisionsRange" onchange="updateTextFieldValue();render()" type="range" min="0" max="7" step="1" value="0"/>
-    <input type="text" id="subDivisionsValue" value="">
+    <label for="subDivisionsRange"></label><input  id="subDivisionsRange" label="subDivisionsRange" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="7" step="1" value="0"/>
+    <label for="subDivisionsValue"></label><input type="text" id="subDivisionsValue" label="subDivisionsValue" value="">
     <br>
-    Rotacionar: <input type="checkbox" id="rotate" onchange="render()"><br>
-    Tri&acirc;ngulos preenchidos: <input id="fillMidTriangles" name="fillMidTriangles" type="checkbox"  onclick="render()"> <br>
-    Torcer tri&acirc;ngulos: <input id="twistTriangles" name="twistTriangles" type="checkbox"  onclick="render()">
-</p>
-</body>
+    Rotacionar: <label for="rotate"></label><input type="checkbox" id="rotate" label="rotate" onchange="render()"><br>
+    Tri&acirc;ngulos preenchidos: <label for="fillMidTriangles"></label><input id="fillMidTriangles" name="fillMidTriangles" type="checkbox"  onclick="render()"> <br>
+    Torcer tri&acirc;ngulos: <label for="twistTriangles"></label><input id="twistTriangles" name="twistTriangles" type="checkbox"  onclick="render()">
+    <table border="1">
+    <tr  align="center"><td colspan="2">Cor dos tri&acircngulos</td><td colspan="2">Cor das linhas</td><td colspan="2">Cor do fundo</td></tr>
+    <tr>
+        <td>R: <label for="triangleR"></label><input  id="triangleR" label = "triangleR" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="0"/></td><td id="triangleRValue">0</td>
+        <td>R: <label for="lineR"></label><input  id="lineR" label="lineR"  oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="255"/></td><td id="lineRValue">255</td>
+        <td>R: <label for="bgR"></label><input  id="bgR" label="bgR"  oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="0"/></td><td id="bgRValue">0</td>
+    </tr>
+    <tr>
+        <td>G: <label for="triangleG"></label><input  id="triangleG" label="triangleG" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="0"/></td><td id="triangleGValue">0</td>
+        <td>G: <label for="lineG"></label><input  id="lineG" label="lineG" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="255"/></td><td id="lineGValue">255</td>
+        <td>G: <label for="bgG"></label><input  id="bgG" label="bgG"  oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="0"/></td><td id="bgGValue">0</td>
+    </tr>
+    <tr>
+        <td>B: <label for="triangleB"></label><input  id="triangleB" label="triangleB" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="255"/></td><td id="triangleBValue">255</td>
+        <td>B: <label for="lineB"></label><input  id="lineB" label="lineB" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="255"/></td><td id="lineBValue">255</td>
+        <td>B: <label for="bgB"></label><input  id="bgB" label="bgB"  oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="255" step="1" value="0"/></td><td id="bgBValue">0</td>
+    </tr>
+    </table>
 </html>
