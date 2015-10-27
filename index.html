@@ -11,26 +11,36 @@ attribute vec4 vPosition;
 varying vec4 varyingVertexColor;
 
 uniform vec4 uniformVertexColor;
+uniform mat4 modelView;
 uniform mat4 projection;
+uniform mat4 transformation;
 uniform int twist;
-uniform float rotationAngle;
+uniform float time;
 
 void
 main()
 {
-    vec4 pos = vPosition;
-    float d = 0.0;
-
+    vec4 pos = vec4(vPosition.xyz,1.0);
     float x = pos.x;
     float y = pos.y;
 
-    if(twist > 0) d = sqrt(x*x + y*y);
+	float s = sin( (time+3.0*y));
+	float c = cos( (time+5.0*x));
+	float tz = 0.05 * s * c;
 
-    pos.x = x*cos(d+rotationAngle) - y*sin(d+rotationAngle);
-    pos.y = x*sin(d+rotationAngle) + y*cos(d+rotationAngle);
+    pos.z += tz;
+
+    if(twist > 0)
+    {
+      float d = sqrt(x*x + y*y);
+
+      pos.x = x*cos(d) - y*sin(d);
+      pos.y = x*sin(d) + y*cos(d);
+    }
+
 
     varyingVertexColor = uniformVertexColor;
-    gl_Position = projection*pos;
+    gl_Position = projection*modelView*transformation*pos;
 }
 </script>
 
@@ -59,7 +69,7 @@ main()
 <br>
 <p>
     N&uacute;mero de sub-divis&otilde;es [0,7]:
-    <label for="subDivisionsRange"></label><input  id="subDivisionsRange" label="subDivisionsRange" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="7" step="1" value="0"/>
+    <label for="subDivisionsRange"></label><input  id="subDivisionsRange" label="subDivisionsRange" oninput="updateTextFieldsValues()" onchange="updateTextFieldsValues();render()" type="range" min="0" max="7" step="1" value="4"/>
     <label for="subDivisionsValue"></label><input type="text" id="subDivisionsValue" label="subDivisionsValue" value="">
     <br>
     Rotacionar: <label for="rotate"></label><input type="checkbox" id="rotate" label="rotate" onchange="render()"><br>

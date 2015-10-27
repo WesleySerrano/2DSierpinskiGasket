@@ -12,10 +12,12 @@ var numTimesToSubdivide;
 
 var fillMidTriangles;
 var rotationAngle = 0.0;
+var time = 0.0;
 
-var rotate;
-var uniformRotationAngleLocation;
+var shouldRotate;
+var uniformTransformationMatrixLocation;
 var uniformVertexColorLocation;
+var uniformTimeLocation;
 var program;
 
 window.onload = function init()
@@ -41,7 +43,6 @@ function updateTextFieldsValues()
     document.getElementById("bgBValue").innerHTML = document.getElementById("bgB").value;
 }
 
-
 function render()
 {
     numTimesToSubdivide = Number(document.getElementById("subDivisionsRange").value);
@@ -49,7 +50,7 @@ function render()
     //generatedColors = [];
     trianglesPointsArray = [];
     fillMidTriangles = document.getElementById("fillMidTriangles").checked;
-    rotate = document.getElementById("rotate").checked;
+    shouldRotate = document.getElementById("rotate").checked;
     var twist = 0;
     if(document.getElementById("twistTriangles").checked) twist = 1;
 
@@ -57,6 +58,8 @@ function render()
 
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
 
     //
     //  Initialize our data for the Sierpinski Gasket
@@ -89,12 +92,21 @@ function render()
     gl.useProgram( program );
 
     uniformVertexColorLocation  = gl.getUniformLocation(program, "uniformVertexColor");
-
+    uniformTimeLocation = gl.getUniformLocation(program, "time");
     var uniformProjectionMatrixLocation = gl.getUniformLocation(program,"projection");
-    var projectionMatrix = ortho(-2,2,-2,2,-1,1);
+    var uniformModelViewMatrixLocation = gl.getUniformLocation(program,"modelView");
+    uniformTransformationMatrixLocation = gl.getUniformLocation(program,"transformation");
+
+    var aspectRatio = canvas.width/canvas.height;
+    var projectionMatrix = perspective(60.0,aspectRatio,1.0,100.0);
     gl.uniformMatrix4fv( uniformProjectionMatrixLocation, false, flatten(projectionMatrix));
 
-    uniformRotationAngleLocation = gl.getUniformLocation(program,"rotationAngle");
+    var eye = vec3(0.0,0.0,2.0);
+    var at = vec3(0.0,0.0,-1.0);
+    var up = vec3(0.0,1.0,0.0);
+
+    var modelViewMatrix = lookAt(eye,at,up);
+    gl.uniformMatrix4fv( uniformModelViewMatrixLocation, false, flatten(modelViewMatrix));
 
     var twistLocation = gl.getUniformLocation(program,"twist");
     gl.uniform1i( twistLocation, twist);
@@ -151,10 +163,17 @@ function draw()
     var lineG = Number(document.getElementById("lineG").value)/255.0;
     var lineB = Number(document.getElementById("lineB").value)/255.0;
 
-    gl.clear( gl.COLOR_BUFFER_BIT );
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gl.uniform1f( uniformRotationAngleLocation, rotationAngle);
-    if(rotate) rotationAngle += 0.001;
+    var rotateX = rotate(-45,[1.0,0.0,0.0]);
+    var rotateZ = rotate(rotationAngle,[0.0,0.0,1.0]);
+    var rotationMatrix = mult(rotateX,rotateZ);
+    gl.uniformMatrix4fv( uniformTransformationMatrixLocation, false, flatten(rotationMatrix));
+
+    gl.uniform1f( uniformTimeLocation, time);
+    time += 0.05;
+    if(time >= 2*Math.PI) time = 0.0;
+    if(shouldRotate) rotationAngle += 0.1;
 
     /******** Triangulos preenchidos ******/
     // Load the data into the GPU
